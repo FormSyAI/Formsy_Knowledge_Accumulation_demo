@@ -59,6 +59,27 @@ class AppointmentTests(unittest.TestCase):
         self.assertIn("无法确定", self.agent.answer("13700000000，明天有什么预约？"))
         self.assertFalse(self.log.exists())
 
+    def test_identifier_variants_are_redacted_in_both_model_requests(self):
+        cases = (
+            ("139 0000 1234", "139****1234", "09:30"),
+            ("139-0000-1234", "139****1234", "09:30"),
+            ("１３９００００１２３４", "139****1234", "09:30"),
+            ("１３9－0000　１２３４", "139****1234", "09:30"),
+            ("３１０１０１１９８５１２０６１２３４", "[证件号已隐藏]", "10:15"),
+            ("３１０１０１－19851206　１２３４", "[证件号已隐藏]", "10:15"),
+        )
+        for identifier, masked, appointment_time in cases:
+            with self.subTest(identifier=identifier):
+                self.log.write_text("", encoding="utf-8")
+                answer = self.agent.answer(f"{identifier}，查询明天的预约")
+                requests = self.log.read_text(encoding="utf-8").splitlines()
+                self.assertEqual(len(requests), 2)
+                for request in requests:
+                    self.assertNotIn(identifier, request)
+                    messages = json.loads(request)["messages"]
+                    self.assertEqual(messages[1]["content"], f"{masked}，查询明天的预约")
+                self.assertIn(appointment_time, answer)
+
     def test_model_cannot_override_patient_and_payloads_are_redacted(self):
         patient = PATIENTS["P7"]
         for tool in ("patient_profile", "list_medications", "list_bills", "list_appointments"):

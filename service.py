@@ -18,13 +18,16 @@ TOOLS = {
 }
 
 IDENTIFIER = re.compile(
-    r"(?<![0-9])(?:(?:[0-9][ -]?){17}[0-9Xx]|1(?:[ -]?[0-9]){10})(?![0-9])"
+    r"(?<![0-9０-９])"
+    r"(?:(?:[0-9０-９][ 　－-]?){17}[0-9０-９XxＸｘ]|[1１](?:[ 　－-]?[0-9０-９]){10})"
+    r"(?![0-9０-９])"
 )
+IDENTIFIER_WIDTH = str.maketrans("０１２３４５６７８９Ｘｘ　－", "0123456789Xx -")
 HOSPITAL_TIMEZONE = timezone(timedelta(hours=8))
 
 
 def _identifier_value(match):
-    return match.group().replace(" ", "").replace("-", "").upper()
+    return match.group().translate(IDENTIFIER_WIDTH).replace(" ", "").replace("-", "").upper()
 
 
 def _redact(value):
