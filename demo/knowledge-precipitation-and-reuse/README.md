@@ -16,8 +16,15 @@
 评审在原实现里发现：脱敏正则只认连续数字，号码写成带空格 / 短横 / 全角时整段原文进了模型请求。
 原文见 [`人工评审意见.md`](人工评审意见.md)。
 
-修复后的实现就是**本仓库根目录的 `service.py`**：`IDENTIFIER` 覆盖全角与分隔符，`_redact` 在服务端统一脱敏，
-用户消息、工具参数与工具结果都过一遍。
+修复后的实现**不在仓库工作区里**（2026-11-17 已从仓库移除，避免给第一段的开发 AI 递答案）。
+用 [`预约查询-实现与修复.patch`](预约查询-实现与修复.patch) 从 `agent/` 复原即可：
+
+```sh
+cp -R agent /tmp/base && cd /tmp/base && git apply /path/to/预约查询-实现与修复.patch
+```
+
+它是：`IDENTIFIER` 覆盖全角与分隔符，`_redact` 在服务端统一脱敏，用户消息、工具参数与工具结果都过一遍。
+（2026-11-17 实测：复原后的实现跑 `../naive-agent-5of7/变体探针.py` = **0/7 全脱敏**，与移除前一致。）
 
 ## 2. 知识沉淀（FormSy 真实提炼）
 
@@ -44,7 +51,8 @@
 
 ## 4. 第二模块：报告解读
 
-任务原文见 [`第二阶段任务.md`](第二阶段任务.md)。起点 = 本仓库 `main`（预约查询已含修复）
+任务原文见 [`第二阶段任务.md`](第二阶段任务.md)。起点 = `agent/` ＋
+[`预约查询-实现与修复.patch`](预约查询-实现与修复.patch)（复原出"预约查询已含修复"的状态）
 ＋ [`起始文件-report_ocr.py`](起始文件-report_ocr.py)（报告抬头里带**全角证件号**）。
 
 开发会话的表现（完整事件流见 [`复用验证/开发会话事件.jsonl`](复用验证/开发会话事件.jsonl)）：
@@ -79,14 +87,23 @@
 ## 7. 自己跑一遍
 
 ```bash
-# 1) 取起点：main + OCR 桩件 + 召回结果 + 任务
-git clone https://github.com/FormSyAI/Formsy_Knowledge_Accumulation_demo.git /tmp/fkad
+# 1) 取起点：agent/ + 预约查询修复补丁 + OCR 桩件 + 召回结果 + 任务
+git clone https://github.com/FormSyAI/Formsy_Knowledge_Accumulation_demo.git /tmp/fkad   # 只当材料来源
 S=/tmp/fkad/demo/knowledge-precipitation-and-reuse
-cp -R /tmp/fkad /tmp/report-agent
-cp "$S/起始文件-report_ocr.py" /tmp/report-agent/report_ocr.py
-cp "$S/项目知识召回.json"     /tmp/report-agent/
-cp "$S/第二阶段任务.md"       /tmp/report-agent/任务.md
-cd /tmp/report-agent && git init -q && git add -A && git commit -qm "起点：预约查询已修复 + 报告解读任务"
+cp -R /tmp/fkad/agent /tmp/report-agent
+cd /tmp/report-agent && git init -q && git add -A && git commit -qm "初始状态：裸 Agent"
+git apply "$S/预约查询-实现与修复.patch" && git commit -aqm "预约查询（已修复）"
+cp "$S/起始文件-report_ocr.py" report_ocr.py
+cp "$S/项目知识召回.json" .
+cp "$S/第二阶段任务.md" 任务.md
+git add -A && git commit -qm "起点：预约查询已修复 + 报告解读任务"
+```
+
+> 克隆下来的 `/tmp/fkad` 只是**材料来源**：`复用验证/实现改动.patch`、`知识文档/`、`对照实验/` 都在里面，
+> 等于把第二段的答案也带在身上。`-s workspace-write` 只限制写、不限制读，所以
+> **别把它放在 `/tmp/report-agent` 旁边**，演示会话起来前把它挪走或删掉。
+
+```bash
 
 # 2) 隔离 CODEX_HOME（模型与第一段相同，见 ../naive-agent-5of7/README.md 的"用什么模型跑"）
 mkdir -p /tmp/report-home && cp ~/.codex/auth.json /tmp/report-home/auth.json

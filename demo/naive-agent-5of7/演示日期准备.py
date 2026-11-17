@@ -4,7 +4,7 @@
 用法：
     python3 演示日期准备.py <工作副本目录> [--today YYYY-MM-DD]
 
-工作副本应当是从 `起始仓库/` 复制出来的（不要直接在本目录的 `起始仓库/` 上跑）。
+工作副本应当是从仓库根的 `agent/` 复制出来的（不要直接在 `agent/` 上跑，那会改掉演示起点）。
 
 - 确定性地改写 `hospital_api.py` 里 5 处 `"date": "..."`：
   A12=今天、A13=明天、A21=今天、P7 两张账单=今天-7 天。
@@ -42,7 +42,7 @@ def main():
     target = os.path.abspath(argv[0])
     path = os.path.join(target, TARGET_FILE)
     if not os.path.isfile(path):
-        print(f"没找到 {TARGET_FILE}：{path}\n（这份副本是从 `起始仓库/` 复制出来的吗？）")
+        print(f"没找到 {TARGET_FILE}：{path}\n（这份副本是从仓库根的 `agent/` 复制出来的吗？）")
         return 2
 
     with open(path, encoding="utf-8") as fh:
