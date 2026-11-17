@@ -22,6 +22,10 @@ cd /tmp/demo-workspace && git init -q && git add -A && git commit -qm "初始状
 （模型口径见该目录 README），跑完用
 `python3 demo/naive-agent-5of7/变体探针.py /tmp/demo-workspace` 读数。
 
+> **要从头到尾跑一遍（含第二段复用验证与沉淀展示）**：照
+> [`demo/完整演示-操作手册.md`](demo/完整演示-操作手册.md) 走，约 25 分钟，
+> 每一步都写了期望输出、失败处理和"这一步证明了什么"。
+
 > ⚠️ **不要把本仓库整体 clone 到演示机上。** 这是案例材料仓库：里面有修复后的答案，
 > 而且 git 历史里就有那次修复提交（`0b6553f 修复脱敏：覆盖全角号码与分隔符写法`）。
 > `-s workspace-write` 只限制写、不限制读。演示机上只留从 `agent/` 复制出来的工作副本。
@@ -32,6 +36,7 @@ cd /tmp/demo-workspace && git init -q && git add -A && git commit -qm "初始状
 | --- | --- |
 | [`agent/`](agent/) | 裸 Agent（未脱敏的起点），自带它的 `README.md` / `任务.md` / `隐私与合规.md` |
 | [`demo/README.md`](demo/README.md) | 两段材料索引 + **演示前检查清单** |
+| [`demo/完整演示-操作手册.md`](demo/完整演示-操作手册.md) | **端到端操作手册**：前置检查 → 第一段 → 验收 → 人工纠错 → 沉淀展示 → 第二段 → 收尾 |
 | [`demo/naive-agent-5of7/`](demo/naive-agent-5of7/README.md) | **前半段**：复现步骤、prompt、模型口径、7 种写法的探针、历史结果与本次复测 |
 | [`demo/knowledge-precipitation-and-reuse/`](demo/knowledge-precipitation-and-reuse/README.md) | **后半段**：人工评审意见、两份知识文档、召回结果、复用验证、对照实验 |
 | [`demo/预检问题回应.md`](demo/预检问题回应.md) | 演示预检挑出的 6 条意见，逐条核实、证据与处置 |
