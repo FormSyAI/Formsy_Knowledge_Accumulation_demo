@@ -1,4 +1,0 @@
-Reading additional input from stdin...
-2026-11-17T06:35:37.522421Z  WARN codex_mcp::rmcp_client: MCP server startup failed server_name="xcodebuildmcp" error=No such file or directory (os error 2)
-2026-11-17T06:39:48.596817Z ERROR codex_core::tools::router: error=unsupported call: update_plan
-2026-11-17T06:40:52.905518Z  WARN codex_mcp::rmcp_client: failed to initialize MCP client during shutdown: MCP startup failed: No such file or directory (os error 2)
