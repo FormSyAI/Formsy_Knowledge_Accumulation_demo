@@ -29,3 +29,14 @@ python3 -m unittest discover -v
 ```
 
 患者与联系方式均为虚构测试数据。
+
+## 演示材料
+
+本仓库另带两段可现场复现的演示，合起来是一条完整链路（见 [`demo/`](demo/README.md)）：
+
+| 目录 | 内容 |
+| --- | --- |
+| [`demo/naive-agent-5of7/`](demo/naive-agent-5of7/README.md) | **前半段**：实验开始前的裸 Agent + 一句需求 → 复现"脱敏只认连续数字"的缺陷（实测漏 5/7） |
+| [`demo/knowledge-precipitation-and-reuse/`](demo/knowledge-precipitation-and-reuse/README.md) | **后半段**：人工纠正 → 知识沉淀（两份知识文档）→ 召回 → 第二个模块（报告解读）复用 → 独立探针验证 |
+
+两段都写清了复现步骤、使用的模型与上游、以及**结论的边界**（缺陷是概率性的；第二个模块"干净"不等于知识起了决定性作用）。
